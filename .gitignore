@@ -1,0 +1,13 @@
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+.DS_Store
+
+.zed
+.vscode
+.history
+.devcontainer
+.idea
