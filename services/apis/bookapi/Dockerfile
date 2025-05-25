@@ -3,13 +3,22 @@ FROM golang:alpine
 WORKDIR /workspace
 
 COPY go.work ./
-COPY services/apis/bookapi ./services/apis/bookapi
 
-WORKDIR /workspace/services/apis/bookapi
+COPY services/apis/bookapi/go.mod services/apis/bookapi/go.sum ./services/apis/bookapi/
+COPY shared/go/configs/go.mod shared/go/configs/go.sum ./shared/go/configs/
 
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    go mod download && go build -o ./bin/api ./cmd/api
+    cd shared/go/configs && go mod download && \
+    cd ../../../services/apis/bookapi && go mod download
+
+COPY services/apis/bookapi ./services/apis/bookapi
+COPY shared/go/configs ./shared/go/configs
+
+WORKDIR /workspace/services/apis/bookapi
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    go build -ldflags '-w -s' -a -o ./bin/api ./cmd/api
 
 CMD ["/workspace/services/apis/bookapi/bin/api"]
 
