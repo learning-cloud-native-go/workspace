@@ -1,0 +1,9 @@
+services:
+
+  book-api:
+    build:
+      context: .
+      dockerfile: ./services/apis/bookapi/Dockerfile
+    ports:
+      - "8080:8080"
+    restart: always
