@@ -3,14 +3,15 @@ package main
 import (
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 
 	"configs"
+	"logger"
 )
 
 func main() {
 	c := configs.NewBookAPI()
+	l := logger.New(c.Server.Debug)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/hello", hello)
@@ -23,9 +24,9 @@ func main() {
 		IdleTimeout:  c.Server.TimeoutIdle,
 	}
 
-	log.Println(fmt.Sprintf("Starting server :%d", c.Server.Port))
+	l.Info().Msgf("Starting server %v", s.Addr)
 	if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.Fatal("Server startup failed")
+		l.Fatal().Err(err).Msg("Server startup failure")
 	}
 }
 
