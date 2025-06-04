@@ -2,23 +2,23 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"net/http"
 
 	"configs"
 	"logger"
+
+	"bookapi/app/router"
 )
 
 func main() {
 	c := configs.NewBookAPI()
 	l := logger.New(c.Server.Debug)
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/hello", hello)
+	r := router.New(l)
 
 	s := &http.Server{
 		Addr:         fmt.Sprintf(":%d", c.Server.Port),
-		Handler:      mux,
+		Handler:      r,
 		ReadTimeout:  c.Server.TimeoutRead,
 		WriteTimeout: c.Server.TimeoutWrite,
 		IdleTimeout:  c.Server.TimeoutIdle,
@@ -28,8 +28,4 @@ func main() {
 	if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		l.Fatal().Err(err).Msg("Server startup failure")
 	}
-}
-
-func hello(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "Hello, world!")
 }
