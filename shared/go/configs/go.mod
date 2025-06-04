@@ -1,4 +1,4 @@
-module configs
+module workspace.dev/shared/go/configs
 
 go 1.24.3
 

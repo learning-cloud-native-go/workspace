@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"configs"
-	"logger"
+	"workspace.dev/shared/go/configs"
+	"workspace.dev/shared/go/logger"
 
-	"bookapi/app/router"
+	"workspace.dev/services/apis/bookapi/app/router"
 )
 
 func main() {

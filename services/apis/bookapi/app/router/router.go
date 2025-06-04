@@ -1,12 +1,12 @@
 package router
 
 import (
-	"logger"
-
 	"github.com/go-chi/chi/v5"
 
-	"bookapi/app/resource/book"
-	"bookapi/app/resource/health"
+	"workspace.dev/shared/go/logger"
+
+	"workspace.dev/services/apis/bookapi/app/resource/book"
+	"workspace.dev/services/apis/bookapi/app/resource/health"
 )
 
 func New(l *logger.Logger) *chi.Mux {

@@ -14,7 +14,7 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"logger"
+	"workspace.dev/shared/go/logger"
 )
 
 // setup would normally be an init() function, however, there seems

@@ -21,8 +21,8 @@ COPY shared/go/logger ./shared/go/logger
 WORKDIR /workspace/services/apis/bookapi
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    go build -ldflags '-w -s' -a -o ./bin/api ./cmd/api
+    go build -ldflags '-w -s' -a -o ./bin/app ./cmd/app
 
-CMD ["/workspace/services/apis/bookapi/bin/api"]
+CMD ["/workspace/services/apis/bookapi/bin/app"]
 
 EXPOSE 8080

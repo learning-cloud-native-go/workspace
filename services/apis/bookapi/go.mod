@@ -1,4 +1,4 @@
-module bookapi
+module workspace.dev/services/apis/bookapi
 
 go 1.24.3
 

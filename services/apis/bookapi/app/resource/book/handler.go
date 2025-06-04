@@ -3,7 +3,7 @@ package book
 import (
 	"net/http"
 
-	"logger"
+	"workspace.dev/shared/go/logger"
 )
 
 type API struct {
