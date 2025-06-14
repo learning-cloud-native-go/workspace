@@ -8,4 +8,22 @@ services:
       - ./services/apis/bookapi/.env
     ports:
       - "8080:8080"
+    depends_on:
+      book-db:
+        condition: service_healthy
+    restart: always
+
+  book-db:
+    image: postgres:alpine
+    environment:
+      - POSTGRES_DB=book_db
+      - POSTGRES_USER=book_user
+      - POSTGRES_PASSWORD=book_pass
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U book_user -d book_db" ]
+      interval: 3s
+      timeout: 5s
+      retries: 5
     restart: always
