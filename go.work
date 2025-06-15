@@ -3,6 +3,7 @@ go 1.24.4
 use (
 	./services/apis/bookapi
 	./shared/go/configs
+	./shared/go/errors
 	./shared/go/logger
 	./shared/go/models
 	./shared/go/repositories

@@ -8,6 +8,7 @@ require (
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.30.0
 	workspace.dev/shared/go/configs v0.0.0-00010101000000-000000000000
+	workspace.dev/shared/go/errors v0.0.0-00010101000000-000000000000
 	workspace.dev/shared/go/logger v0.0.0-00010101000000-000000000000
 	workspace.dev/shared/go/models v0.0.0-00010101000000-000000000000
 	workspace.dev/shared/go/repositories v0.0.0-00010101000000-000000000000
@@ -31,6 +32,8 @@ require (
 )
 
 replace workspace.dev/shared/go/configs => ../../../shared/go/configs
+
+replace workspace.dev/shared/go/errors => ../../../shared/go/errors
 
 replace workspace.dev/shared/go/logger => ../../../shared/go/logger
 

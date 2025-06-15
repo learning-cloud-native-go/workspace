@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 
+	e "workspace.dev/shared/go/errors"
 	"workspace.dev/shared/go/logger"
 	model "workspace.dev/shared/go/models/book"
 	repo "workspace.dev/shared/go/repositories/book"
@@ -35,7 +36,8 @@ func New(logger *logger.Logger, db *gorm.DB) *API {
 func (a *API) List(w http.ResponseWriter, r *http.Request) {
 	books, err := a.repositories.book.List()
 	if err != nil {
-		// handle later
+		a.logger.Error().Err(err).Msg("")
+		e.ServerError(w, e.RespDBDataAccessFailure)
 		return
 	}
 
@@ -45,7 +47,8 @@ func (a *API) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewEncoder(w).Encode(books.ToDto()); err != nil {
-		// handle later
+		a.logger.Error().Err(err).Msg("")
+		e.ServerError(w, e.RespJSONEncodeFailure)
 		return
 	}
 }
@@ -53,32 +56,36 @@ func (a *API) List(w http.ResponseWriter, r *http.Request) {
 func (a *API) Create(w http.ResponseWriter, r *http.Request) {
 	form := &model.Form{}
 	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
-		// handle later
+		a.logger.Error().Err(err).Msg("")
+		e.BadRequest(w, e.RespJSONDecodeFailure)
 		return
 	}
 
 	newBook := form.ToModel()
 	newBook.ID = uuid.New()
 
-	_, err := a.repositories.book.Create(newBook)
+	book, err := a.repositories.book.Create(newBook)
 	if err != nil {
-		// handle later
+		a.logger.Error().Err(err).Msg("")
+		e.ServerError(w, e.RespDBDataInsertFailure)
 		return
 	}
 
+	a.logger.Info().Str("id", book.ID.String()).Msg("new book created")
 	w.WriteHeader(http.StatusCreated)
 }
 
 func (a *API) Read(w http.ResponseWriter, r *http.Request) {
 	id, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
-		// handle later
+		e.BadRequest(w, e.RespInvalidURLParamID)
 		return
 	}
 
 	book, err := a.repositories.book.Read(id)
 	if err != nil {
-		// handle later
+		a.logger.Error().Err(err).Msg("")
+		e.ServerError(w, e.RespDBDataAccessFailure)
 		return
 	}
 
@@ -89,7 +96,8 @@ func (a *API) Read(w http.ResponseWriter, r *http.Request) {
 
 	dto := book.ToDto()
 	if err := json.NewEncoder(w).Encode(dto); err != nil {
-		// handle later
+		a.logger.Error().Err(err).Msg("")
+		e.ServerError(w, e.RespJSONEncodeFailure)
 		return
 	}
 }
@@ -97,13 +105,14 @@ func (a *API) Read(w http.ResponseWriter, r *http.Request) {
 func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 	id, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
-		// handle later
+		e.BadRequest(w, e.RespInvalidURLParamID)
 		return
 	}
 
 	form := &model.Form{}
 	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
-		// handle later
+		a.logger.Error().Err(err).Msg("")
+		e.BadRequest(w, e.RespJSONDecodeFailure)
 		return
 	}
 
@@ -112,29 +121,35 @@ func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 
 	rows, err := a.repositories.book.Update(book)
 	if err != nil {
-		// handle later
+		a.logger.Error().Err(err).Msg("")
+		e.ServerError(w, e.RespDBDataUpdateFailure)
 		return
 	}
 	if rows == 0 {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
+
+	a.logger.Info().Str("id", id.String()).Msg("book updated")
 }
 
 func (a *API) Delete(w http.ResponseWriter, r *http.Request) {
 	id, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
-		// handle later
+		e.BadRequest(w, e.RespInvalidURLParamID)
 		return
 	}
 
 	rows, err := a.repositories.book.Delete(id)
 	if err != nil {
-		// handle later
+		a.logger.Error().Err(err).Msg("")
+		e.ServerError(w, e.RespDBDataRemoveFailure)
 		return
 	}
 	if rows == 0 {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
+
+	a.logger.Info().Str("id", id.String()).Msg("book deleted")
 }
