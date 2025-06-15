@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 
@@ -13,10 +14,12 @@ import (
 	"workspace.dev/shared/go/logger"
 	model "workspace.dev/shared/go/models/book"
 	repo "workspace.dev/shared/go/repositories/book"
+	v "workspace.dev/shared/go/validator"
 )
 
 type API struct {
 	logger       *logger.Logger
+	validator    *validator.Validate
 	repositories *repositories
 }
 
@@ -24,9 +27,10 @@ type repositories struct {
 	book *repo.Repository
 }
 
-func New(logger *logger.Logger, db *gorm.DB) *API {
+func New(logger *logger.Logger, validator *validator.Validate, db *gorm.DB) *API {
 	return &API{
-		logger: logger,
+		logger:    logger,
+		validator: validator,
 		repositories: &repositories{
 			book: repo.New(db),
 		},
@@ -58,6 +62,18 @@ func (a *API) Create(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
 		a.logger.Error().Err(err).Msg("")
 		e.BadRequest(w, e.RespJSONDecodeFailure)
+		return
+	}
+
+	if err := a.validator.Struct(form); err != nil {
+		respBody, err := json.Marshal(v.ToErrResponse(err))
+		if err != nil {
+			a.logger.Error().Err(err).Msg("")
+			e.ServerError(w, e.RespJSONEncodeFailure)
+			return
+		}
+
+		e.ValidationErrors(w, respBody)
 		return
 	}
 
@@ -113,6 +129,18 @@ func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
 		a.logger.Error().Err(err).Msg("")
 		e.BadRequest(w, e.RespJSONDecodeFailure)
+		return
+	}
+
+	if err := a.validator.Struct(form); err != nil {
+		respBody, err := json.Marshal(v.ToErrResponse(err))
+		if err != nil {
+			a.logger.Error().Err(err).Msg("")
+			e.ServerError(w, e.RespJSONEncodeFailure)
+			return
+		}
+
+		e.ValidationErrors(w, respBody)
 		return
 	}
 

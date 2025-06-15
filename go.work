@@ -8,5 +8,6 @@ use (
 	./shared/go/models
 	./shared/go/repositories
 	./shared/go/utils
+	./shared/go/validator
 	./tools/db/dbmigrate
 )

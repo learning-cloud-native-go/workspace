@@ -11,6 +11,7 @@ import (
 	"workspace.dev/services/apis/bookapi/app/router"
 	"workspace.dev/shared/go/configs"
 	"workspace.dev/shared/go/logger"
+	"workspace.dev/shared/go/validator"
 )
 
 const fmtDBString = "host=%s user=%s password=%s dbname=%s port=%d sslmode=disable"
@@ -18,6 +19,7 @@ const fmtDBString = "host=%s user=%s password=%s dbname=%s port=%d sslmode=disab
 func main() {
 	c := configs.NewBookAPI()
 	l := logger.New(c.Server.Debug)
+	v := validator.New()
 
 	var logLevel gormlogger.LogLevel
 	if c.DB.Debug {
@@ -33,7 +35,7 @@ func main() {
 		return
 	}
 
-	r := router.New(l, db)
+	r := router.New(l, v, db)
 
 	s := &http.Server{
 		Addr:         fmt.Sprintf(":%d", c.Server.Port),
