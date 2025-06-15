@@ -4,5 +4,8 @@ use (
 	./services/apis/bookapi
 	./shared/go/configs
 	./shared/go/logger
+	./shared/go/models
+	./shared/go/repositories
+	./shared/go/utils
 	./tools/db/dbmigrate
 )
