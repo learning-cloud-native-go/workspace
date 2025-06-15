@@ -11,7 +11,11 @@ import (
 	"github.com/rs/zerolog"
 )
 
-const fmtReqLogFromRequest = "%s %s HTTP/%d.%d\r\nHost: %s\r\n"
+const (
+	KeyReqID = "request_id"
+
+	fmtReqLogFromRequest = "%s %s HTTP/%d.%d\r\nHost: %s\r\n"
+)
 
 type Logger struct {
 	logger *zerolog.Logger

@@ -6,6 +6,7 @@ require (
 	github.com/go-chi/chi/v5 v5.2.1
 	github.com/go-playground/validator/v10 v10.26.0
 	github.com/google/uuid v1.6.0
+	github.com/rs/xid v1.6.0
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.30.0
 	workspace.dev/shared/go/configs v0.0.0-00010101000000-000000000000
@@ -13,6 +14,7 @@ require (
 	workspace.dev/shared/go/logger v0.0.0-00010101000000-000000000000
 	workspace.dev/shared/go/models v0.0.0-00010101000000-000000000000
 	workspace.dev/shared/go/repositories v0.0.0-00010101000000-000000000000
+	workspace.dev/shared/go/utils v0.0.0-00010101000000-000000000000
 	workspace.dev/shared/go/validator v0.0.0-00010101000000-000000000000
 )
 
