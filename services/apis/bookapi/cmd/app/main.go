@@ -16,6 +16,17 @@ import (
 
 const fmtDBString = "host=%s user=%s password=%s dbname=%s port=%d sslmode=disable"
 
+//	@title			Book API
+//	@version		1.0
+//	@description	This is a RESTful Book API with CRUD functionality
+
+//	@contact.name	Dumindu Madunuwan
+//	@contact.url	https://learning-cloud-native-go.github.io
+
+//	@license.name	Mozilla Public License Version 2.0
+//	@license.url	https://github.com/learning-cloud-native-go/workspace/blob/master/LICENSE
+
+// @servers.url	localhost:8080/v1
 func main() {
 	c := configs.NewBookAPI()
 	l := logger.New(c.Server.Debug)

@@ -12,8 +12,8 @@ import (
 
 	e "workspace.dev/shared/go/errors"
 	"workspace.dev/shared/go/logger"
-	model "workspace.dev/shared/go/models/book"
-	repo "workspace.dev/shared/go/repositories/book"
+	mb "workspace.dev/shared/go/models/book"
+	rb "workspace.dev/shared/go/repositories/book"
 	v "workspace.dev/shared/go/validator"
 )
 
@@ -24,7 +24,7 @@ type API struct {
 }
 
 type repositories struct {
-	book *repo.Repository
+	book *rb.Repository
 }
 
 func New(logger *logger.Logger, validator *validator.Validate, db *gorm.DB) *API {
@@ -32,11 +32,21 @@ func New(logger *logger.Logger, validator *validator.Validate, db *gorm.DB) *API
 		logger:    logger,
 		validator: validator,
 		repositories: &repositories{
-			book: repo.New(db),
+			book: rb.New(db),
 		},
 	}
 }
 
+// List godoc
+//
+//	@summary		List books
+//	@description	List books
+//	@tags			books
+//	@accept			json
+//	@produce		json
+//	@success		200	{array}		mb.DTO
+//	@failure		500	{object}	e.Error
+//	@router			/books [get]
 func (a *API) List(w http.ResponseWriter, r *http.Request) {
 	books, err := a.repositories.book.List()
 	if err != nil {
@@ -57,8 +67,21 @@ func (a *API) List(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Create godoc
+//
+//	@summary		Create book
+//	@description	Create book
+//	@tags			books
+//	@accept			json
+//	@produce		json
+//	@param			body	body	mb.Form	true	"Book form"
+//	@success		201
+//	@failure		400	{object}	e.Error
+//	@failure		422	{object}	e.Errors
+//	@failure		500	{object}	e.Error
+//	@router			/books [post]
 func (a *API) Create(w http.ResponseWriter, r *http.Request) {
-	form := &model.Form{}
+	form := &mb.Form{}
 	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
 		a.logger.Error().Err(err).Msg("")
 		e.BadRequest(w, e.RespJSONDecodeFailure)
@@ -91,6 +114,19 @@ func (a *API) Create(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
+// Read godoc
+//
+//	@summary		Read book
+//	@description	Read book
+//	@tags			books
+//	@accept			json
+//	@produce		json
+//	@param			id	path		string	true	"Book ID"
+//	@success		200	{object}	mb.DTO
+//	@failure		400	{object}	e.Error
+//	@failure		404
+//	@failure		500	{object}	e.Error
+//	@router			/books/{id} [get]
 func (a *API) Read(w http.ResponseWriter, r *http.Request) {
 	id, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
@@ -118,6 +154,21 @@ func (a *API) Read(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Update godoc
+//
+//	@summary		Update book
+//	@description	Update book
+//	@tags			books
+//	@accept			json
+//	@produce		json
+//	@param			id		path	string	true	"Book ID"
+//	@param			body	body	mb.Form	true	"Book form"
+//	@success		200
+//	@failure		400	{object}	e.Error
+//	@failure		404
+//	@failure		422	{object}	e.Errors
+//	@failure		500	{object}	e.Error
+//	@router			/books/{id} [put]
 func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 	id, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
@@ -125,7 +176,7 @@ func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	form := &model.Form{}
+	form := &mb.Form{}
 	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
 		a.logger.Error().Err(err).Msg("")
 		e.BadRequest(w, e.RespJSONDecodeFailure)
@@ -161,6 +212,19 @@ func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 	a.logger.Info().Str("id", id.String()).Msg("book updated")
 }
 
+// Delete godoc
+//
+//	@summary		Delete book
+//	@description	Delete book
+//	@tags			books
+//	@accept			json
+//	@produce		json
+//	@param			id	path	string	true	"Book ID"
+//	@success		200
+//	@failure		400	{object}	e.Error
+//	@failure		404
+//	@failure		500	{object}	e.Error
+//	@router			/books/{id} [delete]
 func (a *API) Delete(w http.ResponseWriter, r *http.Request) {
 	id, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
