@@ -19,7 +19,7 @@ func TestRepository_List(t *testing.T) {
 	db, mock, err := rTest.NewMockDB()
 	uTest.NoError(t, err)
 
-	repo := r.NewRepository(db)
+	repo := r.New(db)
 
 	mockRows := sqlmock.NewRows([]string{"id", "title", "author"}).
 		AddRow(uuid.New(), "Book1", "Author1").
@@ -38,7 +38,7 @@ func TestRepository_Create(t *testing.T) {
 	db, mock, err := rTest.NewMockDB()
 	uTest.NoError(t, err)
 
-	repo := r.NewRepository(db)
+	repo := r.New(db)
 
 	id := uuid.New()
 	mock.ExpectBegin()
@@ -58,7 +58,7 @@ func TestRepository_Read(t *testing.T) {
 	db, mock, err := rTest.NewMockDB()
 	uTest.NoError(t, err)
 
-	repo := r.NewRepository(db)
+	repo := r.New(db)
 
 	id := uuid.New()
 	mockRows := sqlmock.NewRows([]string{"id", "title", "author"}).
@@ -79,7 +79,7 @@ func TestRepository_Update(t *testing.T) {
 	db, mock, err := rTest.NewMockDB()
 	uTest.NoError(t, err)
 
-	repo := r.NewRepository(db)
+	repo := r.New(db)
 
 	id := uuid.New()
 	_ = sqlmock.NewRows([]string{"id", "title", "author"}).
@@ -103,7 +103,7 @@ func TestRepository_Delete(t *testing.T) {
 	db, mock, err := rTest.NewMockDB()
 	uTest.NoError(t, err)
 
-	repo := r.NewRepository(db)
+	repo := r.New(db)
 
 	id := uuid.New()
 	_ = sqlmock.NewRows([]string{"id", "title", "author"}).

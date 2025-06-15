@@ -9,6 +9,7 @@ import (
 
 type BookAPI struct {
 	Server Server
+	DB     DB
 }
 
 func NewBookAPI() *BookAPI {

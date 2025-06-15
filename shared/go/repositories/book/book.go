@@ -7,19 +7,11 @@ import (
 	m "workspace.dev/shared/go/models/book"
 )
 
-type DB interface {
-	List() (m.Books, error)
-	Create(book *m.Book) (*m.Book, error)
-	Read(id uuid.UUID) (*m.Book, error)
-	Update(book *m.Book) (int64, error)
-	Delete(id uuid.UUID) (int64, error)
-}
-
 type Repository struct {
 	db *gorm.DB
 }
 
-func NewRepository(db *gorm.DB) DB {
+func New(db *gorm.DB) *Repository {
 	return &Repository{
 		db: db,
 	}
@@ -44,7 +36,7 @@ func (r *Repository) Create(book *m.Book) (*m.Book, error) {
 
 func (r *Repository) Read(id uuid.UUID) (*m.Book, error) {
 	book := &m.Book{}
-	if err := r.db.Where("id = ?", id).First(&book).Error; err != nil {
+	if err := r.db.Where("id = ?", id).First(book).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, nil
 		}
