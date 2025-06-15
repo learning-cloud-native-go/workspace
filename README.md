@@ -83,7 +83,5 @@ This Go workspace includes:
 │   │
 │   └── ts # TODO
 │
-│
-├── compose.yml
-└── README
+└── compose.yml
 ```
